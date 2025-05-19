@@ -56,3 +56,41 @@ export async function logout() {
 
     if (!response.ok) throw new Error("Logout failed");
 }
+
+export async function updateProfile({ username, password, email }) {
+    const accessToken = localStorage.getItem("accessToken");
+
+    const response = await fetch(`${API_BASE}/auth`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`
+        },
+        credentials: "include",
+        body: JSON.stringify({ username, password, email }),
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Update failed");
+    }
+
+    return await response.json();
+}
+
+export async function deleteProfile() {
+    const accessToken = localStorage.getItem("accessToken");
+
+    const response = await fetch(`${API_BASE}/auth/delete`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        },
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Delete failed");
+    }
+}

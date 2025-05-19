@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { logout, getProfile } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
+import { deleteProfile } from "../api/authApi";
 
 function ProfilePage() {
     const [user, setUser] = useState(null);
@@ -37,6 +38,20 @@ function ProfilePage() {
             <p><strong>Email:</strong> {user.email}</p>
             <br/>
             <button onClick={handleLogout}>Logout</button>
+            <br/>
+            <button onClick={() => navigate("/edit")}>Update Profile</button>
+            <br/>
+            <button onClick={async () => {
+                if (window.confirm("Are you sure you want to delete your account?")) {
+                    try {
+                        await deleteProfile();
+                        alert("account deleted");
+                        navigate("/register");
+                    } catch (err) {
+                        alert(err.message || "Delete failed");
+                    }
+                }
+            }}>Delete Account</button>
         </div>
     );
 }
