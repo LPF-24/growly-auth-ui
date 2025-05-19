@@ -14,7 +14,7 @@ function LoginPage() {
 
         try {
             await login(username, password); // токен уже сохранён, result не нужен
-            alert("Login successful");
+
             navigate("/profile");
         } catch (err) {
             setError(err.message || "Unknown error");
@@ -28,6 +28,12 @@ function LoginPage() {
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
             <button type="submit">Login</button>
             {error && <div style={{color: "red"}}>{error}</div>}
+            <br/>
+            <span>Don't have an account yet?</span>
+            <br/>
+            <button onClick={() => navigate("/register")} style={{ margin: "10px" }}>
+                Register
+            </button>
         </form>
     );
 }

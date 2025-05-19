@@ -34,6 +34,12 @@ function RegisterPage() {
             <br/>
             <button type="submit">Register</button>
             {error && <div style={{ color: "red" }}>{error}</div>}
+            <br/>
+            <span>Already have an account?</span>
+            <br/>
+            <button onClick={() => navigate("/login")} style={{ margin: "10px" }}>
+                Login
+            </button>
         </form>
     );
 }

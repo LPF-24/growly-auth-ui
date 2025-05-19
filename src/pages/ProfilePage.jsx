@@ -20,7 +20,7 @@ function ProfilePage() {
     const handleLogout = async () => {
         try {
             await logout();
-            alert("Logged out");
+            alert("Are you sure you want to log out?");
             navigate("/login");
         } catch(e) {
             alert("Logout failed");

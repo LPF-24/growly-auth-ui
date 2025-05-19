@@ -26,7 +26,6 @@ function EditProfilePage() {
         e.preventDefault();
         try {
             await updateProfile({ username, password, email });
-            alert("Profile updated!");
             navigate("/profile");
         } catch (err) {
             setError(err.message || "Update failed");
@@ -44,6 +43,10 @@ function EditProfilePage() {
             <br/>
             <button type="submit">Save changes</button>
             {error && <div style={{ color: "red" }}> {error}</div>}
+            <br/>
+            <button onClick={() => navigate("/profile")} style={{ margin: "10px" }}>
+                Return to your personal account
+            </button>
         </form>
     );
 }
