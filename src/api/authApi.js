@@ -9,9 +9,7 @@ export async function login(username, password) {
     });
   
     if (!response.ok) {
-      const err = new Error("Login failed");
-      err.response = response;
-      throw err;
+      throwApiError("Login failed", response);
     }
   
     const result = await response.json();
@@ -27,9 +25,7 @@ export async function register(username, password, email) {
     });
 
     if (!response.ok) {
-        const err = new Error("Registration failed");
-        err.response = response;
-        throw err;
+        throwApiError("Registration failed", response);
     }
 
     return await response.json();
@@ -47,9 +43,7 @@ export async function getProfile() {
     });
 
     if (!response.ok) {
-        const err = new Error("Not authorized");
-        err.response = response;
-        throw err;
+        throwApiError("Not authorized", response);
     } 
 
     return await response.json();
@@ -62,9 +56,7 @@ export async function logout() {
     });
 
     if (!response.ok) {
-        const err = new Error("Logout failed");
-        err.response = response;
-        throw err;
+        throwApiError("Logout failed", response);
     } 
 }
 
@@ -82,9 +74,7 @@ export async function updateProfile({ username, password, email }) {
     });
 
     if (!response.ok) {
-        const err = new Error("Update failed");
-        err.response = response;
-        throw err;
+        throwApiError("Update failed", response);
     }
 
     return await response.json();
@@ -102,8 +92,43 @@ export async function deleteProfile() {
     });
 
     if (!response.ok) {
-        const err = new Error("Delete failed");
-        err.response = response;
-        throw err;
+        throwApiError("Delete failed", response);
     }
+}
+
+export async function handleApiError(err, fallbackMessage, setError) {
+    if (err.response) {
+        try {
+            const errorData = await err.response.json();
+            alert(errorData.message || fallbackMessage);
+        } catch {
+            alert(err.message || fallbackMessage);
+        }
+    }
+}
+
+export async function handleApiErrorWithSetter(err, fallbackMessage, setError) {
+    if (err.response) {
+        try {
+            const errorData = await err.response.json();
+            if (errorData.message) {
+                setError(errorData.message);
+            } else {
+                const allMessages = Object.entries(errorData)
+                    .map(([field, message]) => `${field}: ${message}`)
+                    .join(" | ");
+                setError(allMessages || fallbackMessage);    
+            }
+        } catch {
+            setError(`${fallbackMessage} (response parsing error)`);
+        }
+    } else {
+        setError(err.message || fallbackMessage);
+    }
+}
+
+function throwApiError(message, response) {
+    const err = new Error(message);
+    err.response = response;
+    throw err;
 }

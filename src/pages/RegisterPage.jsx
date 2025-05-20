@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { register } from "../api/authApi";
+import { handleApiErrorWithSetter, register } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
@@ -19,23 +19,7 @@ function RegisterPage() {
             alert("Registration successful! Please login.");
             navigate("/login");
         } catch (err) {
-            if (err.response) {
-                try {
-                    const errorData = await err.response.json();
-
-                    if (errorData.message) {
-                        setError(errorData.message);
-                    } else {
-                        const allMessages = Object.entries(errorData)
-                            .map(([field, message]) => `${field}: ${message}`)
-                            .join(" | ");
-                    }
-                } catch (parseError) {
-                    setError("Registration failed (response parsing error)");
-                }
-            } else {
-                setError(err.message || "Registration failed");
-            }
+            await handleApiErrorWithSetter(err, "Registration failed", setError);
         }
     };
 

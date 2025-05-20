@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { logout, getProfile } from "../api/authApi";
+import { logout, getProfile, handleApiError } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import { deleteProfile } from "../api/authApi";
 
@@ -23,12 +23,7 @@ function ProfilePage() {
                 await logout();
                 navigate("/login");
             } catch(e) {
-                if (e.response) {
-                    const errorData = await e.response.json();
-                    alert(errorData.message || "Logout failed");
-                } else {
-                    alert(e.message || "Logout failed");
-                }
+                await handleApiError(e, "Logout failed");
             }
         }    
     };
@@ -54,12 +49,7 @@ function ProfilePage() {
                         alert("Account deleted");
                         navigate("/register");
                     } catch (err) {
-                        if (err.response) {
-                            const errorData = await err.response.json();
-                            alert(errorData.message || "Delete failed");
-                        } else {
-                            alert(err.message || "Delete failed");
-                        }
+                        await handleApiError(err, "Delete failed");
                     }
                 }
             }}>Delete Account</button>

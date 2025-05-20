@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getProfile } from "../api/authApi";
+import { getProfile, handleApiErrorWithSetter } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import { updateProfile } from "../api/authApi";
 
@@ -28,24 +28,7 @@ function EditProfilePage() {
             await updateProfile({ username, password, email });
             navigate("/profile");
         } catch (err) {
-            if (err.response) {
-                try {
-                    const errorData = await err.response.json();
-
-                    if(errorData.message) {
-                        setError(errorData.message);
-                    } else {
-                        const allMessages = Object.entries(errorData)
-                            .map(([field, message]) => `${field}: ${message}`)
-                            .join(" | ");
-                        setError(allMessages || "Update failed");    
-                    }
-                } catch (parseError) {
-                    setError("Update failed (response parsing error)");
-                }
-            } else {
-                setError(err.message || "Update failed");
-            }
+            await handleApiErrorWithSetter(err, "Update failed", setError);
         }
     };
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { login } from "../api/authApi";
+import { handleApiErrorWithSetter, login } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
@@ -16,24 +16,7 @@ function LoginPage() {
             await login(username, password); 
             navigate("/profile");
         } catch (err) {
-            if (err.response) {
-                try {
-                    const errorData = await err.response.json();
-
-                    if (errorData.message) {
-                        setError(errorData.message);
-                    } else {
-                        const allMessages = Object.entries(errorData)
-                            .map(([field, message]) => `${field}: ${message}`)
-                            .join(" | ");
-                        setError(allMessages || "Login failed");
-                    }
-                } catch (parseError) {
-                    setError("Login failed (response parsing error)");
-                }
-            } else {
-                setError(err.message || "Login failed");
-            }
+            await handleApiErrorWithSetter(err, "Login failed", setError);
         }
     };
 
