@@ -19,7 +19,23 @@ function RegisterPage() {
             alert("Registration successful! Please login.");
             navigate("/login");
         } catch (err) {
-            setError(err.message || "Registration failed");
+            if (err.response) {
+                try {
+                    const errorData = await err.response.json();
+
+                    if (errorData.message) {
+                        setError(errorData.message);
+                    } else {
+                        const allMessages = Object.entries(errorData)
+                            .map(([field, message]) => `${field}: ${message}`)
+                            .join(" | ");
+                    }
+                } catch (parseError) {
+                    setError("Registration failed (response parsing error)");
+                }
+            } else {
+                setError(err.message || "Registration failed");
+            }
         }
     };
 
