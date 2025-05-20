@@ -74,8 +74,9 @@ export async function updateProfile({ username, password, email }) {
     });
 
     if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Update failed");
+        const err = new Error();
+        err.response = response;
+        throw err;
     }
 
     return await response.json();

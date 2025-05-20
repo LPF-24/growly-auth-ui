@@ -17,7 +17,7 @@ function EditProfilePage() {
             setEmail(user.email);
         })
         .catch(() => {
-            setError("Unathorized");
+            setError("Unauthorized");
             navigate("/login");
         });
     }, []);
@@ -28,7 +28,24 @@ function EditProfilePage() {
             await updateProfile({ username, password, email });
             navigate("/profile");
         } catch (err) {
-            setError(err.message || "Update failed");
+            if (err.response) {
+                try {
+                    const errorData = await err.response.json();
+
+                    if(errorData.message) {
+                        setError(errorData.message);
+                    } else {
+                        const allMessages = Object.entries(errorData)
+                            .map(([field, message]) => `${field}: ${message}`)
+                            .join(" | ");
+                        setError(allMessages || "Update failed");    
+                    }
+                } catch (parseError) {
+                    setError("Update failed (response parsing error)");
+                }
+            } else {
+                setError(err.message || "Update failed");
+            }
         }
     };
 
