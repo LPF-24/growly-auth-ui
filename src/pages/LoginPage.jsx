@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { handleApiErrorWithSetter, login } from "../api/authApi";
+import { handleApiError, login } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
@@ -16,7 +16,7 @@ function LoginPage() {
             await login(username, password); 
             navigate("/profile");
         } catch (err) {
-            await handleApiErrorWithSetter(err, "Login failed", setError);
+            await handleApiError(err, "Login failed", setError);
         }
     };
 

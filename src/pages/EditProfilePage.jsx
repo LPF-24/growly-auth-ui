@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getProfile, handleApiErrorWithSetter } from "../api/authApi";
+import { getProfile, handleApiError } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import { updateProfile } from "../api/authApi";
 
@@ -28,7 +28,7 @@ function EditProfilePage() {
             await updateProfile({ username, password, email });
             navigate("/profile");
         } catch (err) {
-            await handleApiErrorWithSetter(err, "Update failed", setError);
+            await handleApiError(err, "Update failed", setError);
         }
     };
 

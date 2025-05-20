@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { handleApiErrorWithSetter, register } from "../api/authApi";
+import { handleApiError, register } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
@@ -19,7 +19,7 @@ function RegisterPage() {
             alert("Registration successful! Please login.");
             navigate("/login");
         } catch (err) {
-            await handleApiErrorWithSetter(err, "Registration failed", setError);
+            await handleApiError(err, "Registration failed", setError);
         }
     };
 

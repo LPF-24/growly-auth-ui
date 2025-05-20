@@ -96,34 +96,32 @@ export async function deleteProfile() {
     }
 }
 
-export async function handleApiError(err, fallbackMessage, setError) {
+export async function handleApiError(err, fallbackMessage, setError = null) {
     if (err.response) {
         try {
             const errorData = await err.response.json();
-            alert(errorData.message || fallbackMessage);
-        } catch {
-            alert(err.message || fallbackMessage);
-        }
-    }
-}
 
-export async function handleApiErrorWithSetter(err, fallbackMessage, setError) {
-    if (err.response) {
-        try {
-            const errorData = await err.response.json();
-            if (errorData.message) {
-                setError(errorData.message);
+            if (setError) {
+                if (errorData.message) {
+                    setError(errorData.message);
+                } else {
+                    const allMessages = Object.entries(errorData)
+                        .map(([field, message]) => `${field}: ${message}`)
+                        .join(" | ");
+                    setError(allMessages || fallbackMessage);
+                }
             } else {
-                const allMessages = Object.entries(errorData)
-                    .map(([field, message]) => `${field}: ${message}`)
-                    .join(" | ");
-                setError(allMessages || fallbackMessage);    
+                alert(errorData.message || fallbackMessage);
             }
         } catch {
-            setError(`${fallbackMessage} (response parsing error)`);
+            setError
+                ? setError(`${fallbackMessage} (response parsing error)`)
+                : alert(`${fallbackMessage} (response parsing error)`);
         }
     } else {
-        setError(err.message || fallbackMessage);
+        setError
+            ? setError(err.message || fallbackMessage)
+            : alert(err.message || fallbackMessage);
     }
 }
 
