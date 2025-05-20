@@ -13,11 +13,27 @@ function LoginPage() {
         setError("");
 
         try {
-            await login(username, password); // токен уже сохранён, result не нужен
-
+            await login(username, password); 
             navigate("/profile");
         } catch (err) {
-            setError(err.message || "Unknown error");
+            if (err.response) {
+                try {
+                    const errorData = await err.response.json();
+
+                    if (errorData.message) {
+                        setError(errorData.message);
+                    } else {
+                        const allMessages = Object.entries(errorData)
+                            .map(([field, message]) => `${field}: ${message}`)
+                            .join(" | ");
+                        setError(allMessages || "Login failed");
+                    }
+                } catch (parseError) {
+                    setError("Login failed (response parsing error)");
+                }
+            } else {
+                setError(err.message || "Login failed");
+            }
         }
     };
 
@@ -28,9 +44,9 @@ function LoginPage() {
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
             <button type="submit">Login</button>
             {error && <div style={{color: "red"}}>{error}</div>}
-            <br/>
+            <br />
             <span>Don't have an account yet?</span>
-            <br/>
+            <br />
             <button onClick={() => navigate("/register")} style={{ margin: "10px" }}>
                 Register
             </button>
