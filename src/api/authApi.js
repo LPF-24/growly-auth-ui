@@ -74,7 +74,7 @@ export async function updateProfile({ username, password, email }) {
     });
 
     if (!response.ok) {
-        const err = new Error();
+        const err = new Error("Update failed");
         err.response = response;
         throw err;
     }
@@ -94,7 +94,8 @@ export async function deleteProfile() {
     });
 
     if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Delete failed");
+        const err = new Error("Delete failed");
+        err.response = response;
+        throw err;
     }
 }

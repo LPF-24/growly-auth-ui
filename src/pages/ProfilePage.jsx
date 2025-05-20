@@ -19,9 +19,10 @@ function ProfilePage() {
 
     const handleLogout = async () => {
         try {
-            await logout();
-            alert("Are you sure you want to log out?");
-            navigate("/login");
+            if (window.confirm("Are you sure you want to log out?")) {
+                await logout();
+                navigate("/login");
+            }
         } catch(e) {
             alert("Logout failed");
         }
@@ -45,10 +46,15 @@ function ProfilePage() {
                 if (window.confirm("Are you sure you want to delete your account?")) {
                     try {
                         await deleteProfile();
-                        alert("account deleted");
+                        alert("Account deleted");
                         navigate("/register");
                     } catch (err) {
-                        alert(err.message || "Delete failed");
+                        if (err.response) {
+                            const errorData = await err.response.json();
+                            alert(errorData.message || "Delete failed");
+                        } else {
+                            alert(err.message || "Delete failed");
+                        }
                     }
                 }
             }}>Delete Account</button>
