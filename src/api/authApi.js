@@ -46,7 +46,11 @@ export async function getProfile() {
         credentials: "include",
     });
 
-    if (!response.ok) throw new Error("Not authorized");
+    if (!response.ok) {
+        const err = new Error("Not authorized");
+        err.response = response;
+        throw err;
+    } 
 
     return await response.json();
 }
@@ -57,7 +61,11 @@ export async function logout() {
         credentials: "include",
     });
 
-    if (!response.ok) throw new Error("Logout failed");
+    if (!response.ok) {
+        const err = new Error("Logout failed");
+        err.response = response;
+        throw err;
+    } 
 }
 
 export async function updateProfile({ username, password, email }) {

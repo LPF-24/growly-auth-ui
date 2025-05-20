@@ -18,14 +18,19 @@ function ProfilePage() {
     }, []);
 
     const handleLogout = async () => {
-        try {
-            if (window.confirm("Are you sure you want to log out?")) {
+        if (window.confirm("Are you sure you want to log out?")) {
+            try {
                 await logout();
                 navigate("/login");
+            } catch(e) {
+                if (e.response) {
+                    const errorData = await e.response.json();
+                    alert(errorData.message || "Logout failed");
+                } else {
+                    alert(e.message || "Logout failed");
+                }
             }
-        } catch(e) {
-            alert("Logout failed");
-        }
+        }    
     };
 
     if (!user) return <div>Loading...</div>
