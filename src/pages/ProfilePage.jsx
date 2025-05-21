@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { logout, getProfile, handleApiError } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import { deleteProfile } from "../api/authApi";
+import { escape } from "he";
 
 function ProfilePage() {
     const [user, setUser] = useState(null);
@@ -34,9 +35,9 @@ function ProfilePage() {
         <div style={{ padding: "20px" }}>
             <h2>Your profile</h2>
             <br/>
-            <p><strong>Username:</strong> {user.username}</p>
+            <p><strong>Username:</strong> {escape(user.username)}</p>
             <br/>
-            <p><strong>Email:</strong> {user.email}</p>
+            <p><strong>Email:</strong> {escape(user.email)}</p>
             <br/>
             <button onClick={handleLogout}>Logout</button>
             <br/>
